@@ -264,7 +264,7 @@ void constants() {
 	}
 	return;
 }
-
+// Adds instruction to code array
 void emit(int op, int l, int m)
 {
 	code[code_index].op = op;
@@ -272,7 +272,7 @@ void emit(int op, int l, int m)
 	code[code_index].m = m;
 	code_index++;
 }
-
+// Adds symbol to symbol table
 void add_symbol(int kind, char name[], int value, int level, int address)
 {
 	table[table_index].kind = kind;
@@ -283,7 +283,7 @@ void add_symbol(int kind, char name[], int value, int level, int address)
 	table[table_index].mark = 0;
 	table_index++;
 }
-
+// Marks all symbols from current procedure making them inaccessible to other procedures at higher levels 
 void mark()
 {
 	int i;
@@ -296,7 +296,7 @@ void mark()
 		table[i].mark = 1;
 	}
 }
-
+// Checks if the identifier name is valid for current level
 int multiple_declaration_check(char name[])
 {
 	int i;
@@ -305,7 +305,7 @@ int multiple_declaration_check(char name[])
 			return i;
 	return -1;
 }
-
+// Searches for symbol to make sure name and kind are valid for current level
 int find_symbol(char name[], int kind)
 {
 	int i;
@@ -324,8 +324,7 @@ int find_symbol(char name[], int kind)
 	}
 	return max_idx;
 }
-
-
+// Prints error depending on code and case
 void print_parser_error(int error_code, int case_code)
 {
 	switch (error_code)
@@ -471,7 +470,7 @@ void print_parser_error(int error_code, int case_code)
 
 	}
 }
-
+// Prints assembly code in code array
 void print_assembly_code()
 {
 	int i;
@@ -569,7 +568,7 @@ void print_assembly_code()
 	}
 	printf("\n");
 }
-
+// Prints symbol table array
 void print_symbol_table()
 {
 	int i;
