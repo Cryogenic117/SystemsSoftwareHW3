@@ -1,7 +1,8 @@
-/* Written By Brandon Knudson and Tristan Hedrick
- * COP3402 
- * Fall 2022
- */
+/* 
+* Written By Brandon Knudson and Tristan Hedrick
+* COP3402 
+* Fall 2022
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
