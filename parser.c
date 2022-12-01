@@ -19,6 +19,11 @@ void mark();
 int multiple_declaration_check(char name[]);
 int find_symbol(char name[], int kind);
 
+void block();
+void declarations();
+void constants();
+void statement(); 
+
 void print_parser_error(int error_code, int case_code);
 void print_assembly_code();
 void print_symbol_table();
@@ -28,6 +33,128 @@ instruction *parse(int code_flag, int table_flag, lexeme *list)
 	// your code here
 }
 
+void block() {
+	level++;
+	declarations();
+	if(error != -1) {
+		mark();
+		level--;
+	}
+	statement();
+		if(error != -1) {
+		mark();
+		level--;
+	}
+	return;
+}
+
+void declarations() {
+	int var_count = 0;
+	while(1) {
+		int temp_token_type = tokens[token_index].type;
+		if(temp_token_type != 3 || temp_token_type != 4 || temp_token_type != 5) {
+			emit(INC,9,var_count+3);
+			return;
+		}
+		if(temp_token_type == keyword_const) {
+			constants();
+			if(error == -1) {
+				return;
+			}
+		}
+		else {
+			if(temp_token_type == keyword_procedure) {
+				procedures();
+				if(error == -1) {
+					return;
+				}
+				continue;
+			}
+			variables(var_count);
+			var_count++;
+			if(error == -1) {
+				return;
+			}
+		}
+		token_index++;
+	}
+}
+
+void constants() {
+	int error_value;
+	char* temp;
+	int someNumber;
+
+	token_index++;
+	if(tokens[token_index].type == identifier) {
+		error_value = multiple_declaration_check(tokens[token_index].identifier_name);
+		if(error_value != -1) {
+			print_parser_error(3,0);
+			error = 1;
+		}
+		strcpy(temp,tokens[token_index].identifier_name);
+		token_index++;
+	}
+	else {
+		print_parser_error(2,1);
+		if(tokens[token_index].type != assignment_symbol) {			
+			error = -1;
+			return;
+		}
+		error = 1;
+		temp = NULL;
+	}
+	if(tokens[token_index].type == assignment_symbol) {
+		token_index++;
+	}
+	else {
+		print_parser_error(4,1);
+		if(tokens[token_index].type != minus)
+			if(tokens[token_index].type != number)
+				error = -1;
+				return;
+	}
+	if(tokens[token_index].type == minus) {
+		token_index++;
+	}
+	if(tokens[token_index].type == number) {
+		someNumber = tokens[token_index].number_value;
+		token_index++;
+	}
+	else {
+		print_parser_error(5,0);
+		if(tokens[token_index].type != semicolon) {
+			error = -1;
+			return;
+		}
+		error = 1;
+		someNumber = 0;
+	}
+	if(tokens[token_index].type == minus) {
+		someNumber *= -1;
+	}
+	add_symbol(1,temp,someNumber, level, 0);
+	if(tokens[token_index].type == semicolon) {
+		token_index++;
+	}
+	else {
+		print_parser_error(6,1);
+		int tempTypeNum = tokens[token_index].type;
+		if (
+				tempTypeNum == 3|| tempTypeNum == 4|| tempTypeNum == 5|| 
+				tempTypeNum == 1|| tempTypeNum == 6|| tempTypeNum == 7|| 
+				tempTypeNum == 9|| tempTypeNum == 11|| tempTypeNum == 13||
+				tempTypeNum == 14|| tempTypeNum == 16|| tempTypeNum == 15|| 
+				tempTypeNum == 17|| tempTypeNum == 22
+			) {
+			error = 1;
+		}
+		else {
+			error = -1;
+		}
+	}
+	return;
+}
 
 void emit(int op, int l, int m)
 {
