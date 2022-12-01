@@ -109,10 +109,10 @@ void constants() {
 	}
 	else {
 		print_parser_error(4,1);
-		if(tokens[token_index].type != minus)
-			if(tokens[token_index].type != number)
-				error = -1;
-				return;
+		if(tokens[token_index].type != minus && tokens[token_index].type != number) {
+			error = -1;
+			return;
+		}
 	}
 	if(tokens[token_index].type == minus) {
 		token_index++;
@@ -141,12 +141,12 @@ void constants() {
 		print_parser_error(6,1);
 		int tempTypeNum = tokens[token_index].type;
 		if (
-				tempTypeNum == 3|| tempTypeNum == 4|| tempTypeNum == 5|| 
-				tempTypeNum == 1|| tempTypeNum == 6|| tempTypeNum == 7|| 
-				tempTypeNum == 9|| tempTypeNum == 11|| tempTypeNum == 13||
-				tempTypeNum == 14|| tempTypeNum == 16|| tempTypeNum == 15|| 
-				tempTypeNum == 17|| tempTypeNum == 22
-			) {
+			tempTypeNum == 3|| tempTypeNum == 4|| tempTypeNum == 5|| 
+			tempTypeNum == 1|| tempTypeNum == 6|| tempTypeNum == 7|| 
+			tempTypeNum == 9|| tempTypeNum == 11|| tempTypeNum == 13||
+			tempTypeNum == 14|| tempTypeNum == 16|| tempTypeNum == 15|| 
+			tempTypeNum == 17|| tempTypeNum == 22
+		) {
 			error = 1;
 		}
 		else {
