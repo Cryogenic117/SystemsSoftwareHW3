@@ -93,13 +93,7 @@ instruction *parse(int code_flag, int table_flag, lexeme *list)
 int special_error_check() {
 	int tempTypeNum = tokens[token_index].type;
 		// Non-stopping error
-		if (
-			tempTypeNum == 3|| tempTypeNum == 4|| tempTypeNum == 5|| 
-			tempTypeNum == 1|| tempTypeNum == 6|| tempTypeNum == 7|| 
-			tempTypeNum == 9|| tempTypeNum == 11|| tempTypeNum == 13||
-			tempTypeNum == 14|| tempTypeNum == 16|| tempTypeNum == 15|| 
-			tempTypeNum == 17|| tempTypeNum == 22
-		) {
+		if (tempTypeNum==1||tempTypeNum==3||tempTypeNum==4||tempTypeNum==5||tempTypeNum==6||tempTypeNum==7||tempTypeNum==9||tempTypeNum==11||tempTypeNum== 13||tempTypeNum==14||tempTypeNum==15||tempTypeNum==16||tempTypeNum==17||tempTypeNum==22) {
 			error = 1;
 		}
 		// Stopping Error
