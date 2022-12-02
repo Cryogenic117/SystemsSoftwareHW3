@@ -421,9 +421,10 @@ void condition() {
 }
 
 void expression() {
-	int temp_token; // Cached Token Type Value As We Will Need to Store Previous type for +|- logic
+	token_type temp_token; // Cached Token Type Value As We Will Need to Store Previous type for +|- logic
 	term(); // Starts with a term
 	if (error != -1) {
+		temp_token = tokens[token_index].type;
     	while (temp_token == plus || temp_token == minus) { // Then +|- Term 0 or more times
 			token_index++;
       		term();
@@ -442,7 +443,7 @@ void expression() {
   return;
 }
 void term() {
-	int temp_token; // Cached Token Type Value As We Will Need to Store Previous type for *|/ logic
+	token_type temp_token; // Cached Token Type Value As We Will Need to Store Previous type for *|/ logic
   	factor(); // Starts with a Factor
   	if (error != -1) {
     	temp_token = tokens[token_index].type;
@@ -570,7 +571,7 @@ void procedures() {
 		error = 1;
 		*temp = NULL;
 	}
-	add_symbol(LOD, temp, 0, level, -1);
+	add_symbol(3, temp, 0, level, -1);
 	if (tokens[token_index].type == semicolon) {
 		token_index++;
 	}
