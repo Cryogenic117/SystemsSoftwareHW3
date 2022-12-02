@@ -549,7 +549,7 @@ int special_error_check() {
 }
 
 void procedures() {
-	char * temp;
+	char temp[12];
 	// Check for identifier and if the name is valid
 	token_index++;
 	if (tokens[token_index].type == identifier) {
@@ -568,7 +568,7 @@ void procedures() {
 			return;
 		}
 		error = 1;
-		temp = NULL;
+		*temp = NULL;
 	}
 	add_symbol(LOD, temp, 0, level, -1);
 	if (tokens[token_index].type == semicolon) {
@@ -599,14 +599,14 @@ void block() {
 }
 
 void variables(int var_count) {
-	char* name_ptr; // Cache identifier name for add_symbol
+	char name[12]; // Cache identifier name for add_symbol
 	token_index++;
 	if (tokens[token_index].type == identifier) { // First should be an identifier
 		if (multiple_declaration_check(tokens[token_index].identifier_name) != -1) { // The identifier should be valid
 			print_parser_error(3,0);
 			error = 1;
 		}
-		strcpy(name_ptr,tokens[token_index].identifier_name); // The identifier name location is cached
+		strcpy(name,tokens[token_index].identifier_name); // The identifier name location is cached
 		token_index++;
 	}
 	else {
@@ -616,9 +616,9 @@ void variables(int var_count) {
 			return;
 		}
 		error = 1;
-		name_ptr = NULL;
+		*name = NULL;
 	}
-	add_symbol(2,name_ptr,0,level,var_count + 3); // The symbol is added to the table
+	add_symbol(2,name,0,level,var_count + 3); // The symbol is added to the table
 	if (tokens[token_index].type == semicolon) { // Then there should be a semicolon
 		token_index++;
 	}
@@ -633,7 +633,7 @@ void declarations() {
 	int variable_calls = 0;
 	while (1) {
 		// No need to increment in loop as the function calls will increment
-		int temp_token_type = tokens[token_index].type;
+		token_type temp_token_type = tokens[token_index].type;
 		// If Token is not a declaration INC to create space for activation record
 		if (temp_token_type != keyword_const && temp_token_type != keyword_var && temp_token_type != keyword_procedure) {
 			emit(INC,0,variable_calls + 3);
@@ -669,7 +669,7 @@ void declarations() {
 
 void constants() {
 	// Saves identifier name for add_symbol call token is incremented
-	char* temp;
+	char temp[12];
 	// Saves number as add_symbol call token is incremented
 	int someNumber;
 	// Is number negative or positive
@@ -683,7 +683,7 @@ void constants() {
 			error = 1;
 		}
 		// Set temp to identifier name
-		temp = tokens[token_index].identifier_name;
+		strcpy(temp,tokens[token_index].identifier_name);
 		token_index++;
 	}
 	else {
@@ -693,7 +693,7 @@ void constants() {
 			return;
 		}
 		error = 1;
-		temp = NULL;
+		*temp = NULL;
 	}
 	// Next token should be the assignment symbol
 	if (tokens[token_index].type == assignment_symbol) {
