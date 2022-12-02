@@ -167,7 +167,7 @@ void statement() {
 				if (error == -1) {
 					return;
 				}
-			} while (tokens[token_index].type == keyword_write );
+			} while (tokens[token_index].type == semicolon );
 			if (tokens[token_index].type == keyword_end) {
 				token_index++;
 			}
