@@ -97,6 +97,7 @@ instruction *parse(int code_flag, int table_flag, lexeme *list) // B.K.
 void statement() {
 	int temp_level,temp_address;
 	int temp_code_index1 = code_index;
+	int temp_table_index;
     switch (tokens[token_index].type) {
 		case identifier:
 			if (find_symbol(tokens[token_index].identifier_name, 2) == -1) {
@@ -293,7 +294,6 @@ void statement() {
 			token_index++;
 			break;
 		case keyword_def:
-			int temp_table_index;
 			token_index++;
 			if (tokens[token_index].type == identifier) {
 				temp_table_index = find_symbol(tokens[token_index].identifier_name,3);
@@ -635,8 +635,8 @@ void declarations() {
 		// No need to increment in loop as the function calls will increment
 		int temp_token_type = tokens[token_index].type;
 		// If Token is not a declaration INC to create space for activation record
-		if (temp_token_type != keyword_const || temp_token_type != keyword_var|| temp_token_type != keyword_procedure) {
-			emit(INC,9,variable_calls + 3);
+		if (temp_token_type != keyword_const && temp_token_type != keyword_var && temp_token_type != keyword_procedure) {
+			emit(INC,0,variable_calls + 3);
 			return;
 		}
 		// If Token type is constant
@@ -657,7 +657,8 @@ void declarations() {
 			}
 			// Otherwise token type is variable
 			else {
-				variables(variable_calls++);
+				variables(variable_calls);
+				variable_calls++;
 				if (error == -1) {
 					return;
 				}
