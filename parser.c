@@ -558,7 +558,7 @@ void procedures() {
 			error =1;
 		}
 		// Save Identifier Name for Later
-		temp = tokens[token_index].identifier_name;
+		strcpy(temp,tokens[token_index].identifier_name);
 		token_index++;
 	}
 	else {
@@ -606,7 +606,7 @@ void variables(int var_count) {
 			print_parser_error(3,0);
 			error = 1;
 		}
-		name_ptr = tokens[token_index].identifier_name; // The identifier name location is cached
+		strcpy(name_ptr,tokens[token_index].identifier_name); // The identifier name location is cached
 		token_index++;
 	}
 	else {
