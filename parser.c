@@ -28,6 +28,7 @@ void block(); 		// B.K.
 void declarations();// B.K.
 void constants(); 	// B.K.
 void procedures();	// B.K.
+void variables(int var_count);	// B.K.
 void statement(); 	// T.H.
 void term();		// T.H.
 void factor();		// T.H.
@@ -98,8 +99,8 @@ void statement() {
 	int temp_code_index1 = code_index;
     switch (tokens[token_index].type) {
 		case identifier:
-			if (find_symbol(tokens[token_index].type, 2) == -1) {
-				if (find_symbol(tokens[token_index].type, 1) == find_symbol(tokens[token_index].type, 2)) {
+			if (find_symbol(tokens[token_index].identifier_name, 2) == -1) {
+				if (find_symbol(tokens[token_index].identifier_name, 1) == find_symbol(tokens[token_index].identifier_name, 2)) {
 					print_parser_error(8,1);
 				}
 				else {
@@ -109,8 +110,8 @@ void statement() {
 			}
 			else {
 			// Cache Current Level and Address
-			temp_level = level - table[find_symbol(tokens[token_index].type, 2)].level;
-			temp_address = table[find_symbol(tokens[token_index].type, 2)].address;
+			temp_level = level - table[find_symbol(tokens[token_index].identifier_name, 2)].level;
+			temp_address = table[find_symbol(tokens[token_index].identifier_name, 2)].address;
 			}
 			if (tokens[token_index + 1].type == assignment_symbol) {
 			token_index += 2; // Assignment symbol is 2 chars long
@@ -132,8 +133,8 @@ void statement() {
 		case keyword_call:
 			token_index++;
 			if (tokens[token_index].type == identifier) {
-				if (find_symbol(tokens[token_index].type, 3) == -1) {
-					if (find_symbol(tokens[token_index].type, 1) == find_symbol(tokens[token_index].type, 2)) {
+				if (find_symbol(tokens[token_index].identifier_name, 3) == -1) {
+					if (find_symbol(tokens[token_index].identifier_name, 1) == find_symbol(tokens[token_index].identifier_name, 2)) {
 						print_parser_error(8,2);
 					}
 					else {
@@ -142,8 +143,8 @@ void statement() {
 					error = 1;
 				}
 				else {
-					temp_level = level - table[find_symbol(tokens[token_index].type, 2)].level;
-					temp_address = table[find_symbol(tokens[token_index].type, 2)].address;
+					temp_level = level - table[find_symbol(tokens[token_index].identifier_name, 2)].level;
+					temp_address = table[find_symbol(tokens[token_index].identifier_name, 2)].address;
 				}
 				token_index++;
 			}
@@ -248,8 +249,8 @@ void statement() {
 		case keyword_read:
 			token_index++;
 			if (tokens[token_index].type == identifier) {
-				if (find_symbol(tokens[token_index].type, 2) == -1) {
-					if (find_symbol(tokens[token_index].type, 1) == find_symbol(tokens[token_index].type, 3)) {
+				if (find_symbol(tokens[token_index].identifier_name, 2) == -1) {
+					if (find_symbol(tokens[token_index].identifier_name, 1) == find_symbol(tokens[token_index].identifier_name, 3)) {
 						print_parser_error(8,3);
 					}
 					else {
@@ -258,8 +259,8 @@ void statement() {
 					error = 1;
 				}
 				else {
-					temp_level = level - table[find_symbol(tokens[token_index].type, 2)].level;
-					temp_address = table[find_symbol(tokens[token_index].type, 2)].address;
+					temp_level = level - table[find_symbol(tokens[token_index].identifier_name, 2)].level;
+					temp_address = table[find_symbol(tokens[token_index].identifier_name, 2)].address;
 				}
 			token_index++;
 			}
@@ -295,9 +296,9 @@ void statement() {
 			int temp_table_index;
 			token_index++;
 			if (tokens[token_index].type == identifier) {
-				temp_table_index = find_symbol(tokens[token_index].type,3);
+				temp_table_index = find_symbol(tokens[token_index].identifier_name,3);
 				if (temp_table_index == -1) {
-					if (find_symbol(tokens[token_index].type,1) == find_symbol(tokens[token_index].type,2)) {
+					if (find_symbol(tokens[token_index].identifier_name,1) == find_symbol(tokens[token_index].identifier_name,2)) {
 						print_parser_error(8,4);
 					}
 					else {
@@ -464,8 +465,8 @@ void term() {
 }
 void factor() {  
 	if (tokens[token_index].type == identifier) {
-    	if (find_symbol(tokens[token_index].type,1) == find_symbol(tokens[token_index].type,2)) {
-      		if (find_symbol(tokens[token_index].type,3) == -1) {
+    	if (find_symbol(tokens[token_index].identifier_name,1) == find_symbol(tokens[token_index].identifier_name,2)) {
+      		if (find_symbol(tokens[token_index].identifier_name,3) == -1) {
         		print_parser_error(8,5);
       		}
      		else {
@@ -474,17 +475,17 @@ void factor() {
       		error = 1;
       		emit(LOD,-1,-1);
     	}
-   		else if (find_symbol(tokens[token_index].type,1) == -1) {
-      		emit(LOD,level - table[find_symbol(tokens[token_index].type,2)].level, table[find_symbol(tokens[token_index].type,2)].address);
+   		else if (find_symbol(tokens[token_index].identifier_name,1) == -1) {
+      		emit(LOD,level - table[find_symbol(tokens[token_index].identifier_name,2)].level, table[find_symbol(tokens[token_index].identifier_name,2)].address);
     	}
-    	else if (find_symbol(tokens[token_index].type,2) == -1) {
-      		emit(LOD,0,table[find_symbol(tokens[token_index].type,1)].value); // Value? Maybe address?
+    	else if (find_symbol(tokens[token_index].identifier_name,2) == -1) {
+      		emit(LOD,0,table[find_symbol(tokens[token_index].identifier_name,1)].value); // Value? Maybe address?
     	}
-    	else if (table[find_symbol(tokens[token_index].type,2)].level < table[find_symbol(tokens[token_index].type,1)].level) {
-      		emit(LOD,0,table[find_symbol(tokens[token_index].type,1)].value);
+    	else if (table[find_symbol(tokens[token_index].identifier_name,2)].level < table[find_symbol(tokens[token_index].identifier_name,1)].level) {
+      		emit(LOD,0,table[find_symbol(tokens[token_index].identifier_name,1)].value);
     	}
     	else {
-      		emit(LOD,level - table[find_symbol(tokens[token_index].type,2)].level,table[find_symbol(tokens[token_index].type,2)].address);
+      		emit(LOD,level - table[find_symbol(tokens[token_index].identifier_name,2)].level,table[find_symbol(tokens[token_index].identifier_name,2)].address);
    		}
     	token_index++;
   	}
@@ -557,7 +558,7 @@ void procedures() {
 			error =1;
 		}
 		// Save Identifier Name for Later
-		strcpy(temp,tokens[token_index].identifier_name);
+		temp = tokens[token_index].identifier_name;
 		token_index++;
 	}
 	else {
@@ -597,16 +598,45 @@ void block() {
 	return;
 }
 
+void variables(int var_count) {
+	char* name_ptr; // Cache identifier name for add_symbol
+	token_index++;
+	if (tokens[token_index].type == identifier) { // First should be an identifier
+		if (multiple_declaration_check(tokens[token_index].identifier_name) != -1) { // The identifier should be valid
+			print_parser_error(3,0);
+			error = 1;
+		}
+		name_ptr = tokens[token_index].identifier_name; // The identifier name location is cached
+		token_index++;
+	}
+	else {
+		print_parser_error(2,2);
+		if (tokens[token_index].type != semicolon) {
+			error = -1;
+			return;
+		}
+		error = 1;
+		name_ptr = NULL;
+	}
+	add_symbol(2,name_ptr,0,level,var_count + 3); // The symbol is added to the table
+	if (tokens[token_index].type == semicolon) { // Then there should be a semicolon
+		token_index++;
+	}
+	else {
+		print_parser_error(6,2);
+		special_error_check();
+	}
+	return;
+}
 void declarations() {
 	// Track Variables() calls for addressing
-	const ACTIVATION_RECORD_SIZE = 3;
 	int variable_calls = 0;
 	while (1) {
 		// No need to increment in loop as the function calls will increment
 		int temp_token_type = tokens[token_index].type;
 		// If Token is not a declaration INC to create space for activation record
 		if (temp_token_type != keyword_const || temp_token_type != keyword_var|| temp_token_type != keyword_procedure) {
-			emit(INC,9,variable_calls + ACTIVATION_RECORD_SIZE);
+			emit(INC,9,variable_calls + 3);
 			return;
 		}
 		// If Token type is constant
@@ -652,7 +682,7 @@ void constants() {
 			error = 1;
 		}
 		// Set temp to identifier name
-		strcpy(temp,tokens[token_index].identifier_name);
+		temp = tokens[token_index].identifier_name;
 		token_index++;
 	}
 	else {
